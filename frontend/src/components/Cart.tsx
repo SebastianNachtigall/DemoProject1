@@ -73,9 +73,10 @@ const Cart: React.FC = () => {
         },
         body: JSON.stringify({
           items: items.map(item => ({
-            name: item.prop.name,
-            price: item.prop.price * item.quantity,
-            print_cost: item.printedVersion ? (item.prop.print_cost || 0) * item.quantity : 0
+            ...item.prop,
+            quantity: item.quantity,
+            printedVersion: item.printedVersion,
+            print_cost: item.printedVersion ? item.prop.print_cost : 0
           })),
           discountPercent: discountPercent
         }),
@@ -88,43 +89,23 @@ const Cart: React.FC = () => {
       // Get the PDF blob
       const blob = await response.blob();
       
-      // Try to get filename from headers
-      const customFilename = response.headers.get('X-Filename');
-      const contentDisposition = response.headers.get('Content-Disposition');
-      console.log('Headers:', {
-        'X-Filename': customFilename,
-        'Content-Disposition': contentDisposition
-      });
+      // Get filename from headers
+      const filename = response.headers.get('X-Filename') || 'invoice.pdf';
       
-      let filename = 'invoice.pdf';
-      if (customFilename) {
-        filename = customFilename;
-      } else if (contentDisposition) {
-        const match = contentDisposition.match(/filename="([^"]+)"/);
-        if (match) {
-          filename = match[1];
-        }
-      }
-      console.log('Using filename:', filename);
-      
-      // Create a URL for the blob
+      // Create a download link
       const url = window.URL.createObjectURL(blob);
-      
-      // Create a temporary link element and trigger download
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', filename);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
-      // Clean up the URL
       window.URL.revokeObjectURL(url);
-      
+
       // Clear the cart after successful checkout
       clearCart();
     } catch (error) {
-      console.error('Error generating invoice:', error);
+      console.error('Checkout error:', error);
       alert('Failed to generate invoice. Please try again.');
     }
   };

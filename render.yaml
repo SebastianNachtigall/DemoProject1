@@ -1,0 +1,32 @@
+services:
+  # Backend API service
+  - type: web
+    name: movie-props-api
+    env: python
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: cd backend && gunicorn app:app --bind 0.0.0.0:$PORT --preload
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: movie-props-db
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: 3.13.1
+
+  # Frontend service
+  - type: web
+    name: movie-props-frontend
+    env: node
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm run preview
+    envVars:
+      - key: VITE_API_URL
+        value: https://movie-props-api.onrender.com
+
+databases:
+  - name: movie-props-db
+    databaseName: movie_props
+    user: movie_props
+    plan: free

@@ -14,6 +14,7 @@ import AddToCartModal from './AddToCartModal';
 import PropDetailModal from './PropDetailModal';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { API_BASE_URL } from '../config';
 
 interface Prop {
   id: number;
@@ -153,7 +154,7 @@ const PropList: React.FC = () => {
   const { addToCart } = useCart();
 
   React.useEffect(() => {
-    fetch('http://localhost:5001/api/props')
+    fetch(`${API_BASE_URL}/api/props`)
       .then((response) => response.json())
       .then((data) => setProps(data))
       .catch((error) => console.error('Error fetching props:', error));

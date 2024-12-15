@@ -21,6 +21,8 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import FileUploadIcon from '@mui/icons-material/FileUpload'
 import PropForm from './PropForm'
 import DiscountSettings from './DiscountSettings'
+import EmailSettings from './EmailSettings'
+import PrintNotifications from './PrintNotifications'
 import axios from 'axios'
 import { API_BASE_URL } from '../../config'
 
@@ -184,8 +186,8 @@ const AdminPanel = () => {
   }
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
+    <Container maxWidth="lg">
+      <Typography variant="h4" component="h1" gutterBottom>
         Admin Panel
       </Typography>
       
@@ -281,6 +283,12 @@ const AdminPanel = () => {
           {message}
         </Typography>
       )}
+      <DiscountSettings 
+        open={isDiscountSettingsOpen}
+        onClose={() => setIsDiscountSettingsOpen(false)}
+      />
+      <EmailSettings />
+      <PrintNotifications />
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
         <PropForm
           initialData={selectedProp || undefined}
@@ -288,10 +296,6 @@ const AdminPanel = () => {
           submitButtonText={selectedProp ? 'Update Prop' : 'Create Prop'}
         />
       </Dialog>
-      <DiscountSettings 
-        open={isDiscountSettingsOpen}
-        onClose={() => setIsDiscountSettingsOpen(false)}
-      />
     </Container>
   )
 }

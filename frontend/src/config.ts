@@ -1,2 +1,7 @@
 // API configuration
-export const API_BASE_URL = 'http://localhost:5001';
+import { getApiUrl } from './utils/api';
+
+// Base URL for API requests
+export const API_BASE_URL = getApiUrl();
+
+// Other config values can go here
